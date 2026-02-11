@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Valentine's Days</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700&family=Prompt:wght@200;400;600&display=swap');
+
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            outline: none; 
+            user-select: none; 
+        }
+
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            font-family: 'Prompt', sans-serif; 
+            background-color: #000; 
+            overflow: hidden; 
+        }
+
+        .scene { 
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            display: flex; 
+            transition: all 1s cubic-bezier(0.8, 0, 0.2, 1); 
+            text-align: center; 
+        }
+
+        #page1 { 
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('p1.jpg') center/cover no-repeat; 
+            z-index: 10; 
+            color: white; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+        }
+
+        .heart-container { 
+            position: relative; 
+            width: 180px; 
+            height: 180px; 
+            cursor: pointer; 
+            filter: drop-shadow(0 0 15px rgba(255, 77, 109, 0.6)); 
+        }
+
+        #fill-layer { 
+            fill: #ff4d6d; 
+            clip-path: inset(100% 0 0 0); 
+            transition: clip-path 0.1s linear; 
+        }
+
+        /* --- Page 2 --- */
+        #page2 { 
+            background: #fdf0f0; 
+            transform: translateY(100%); 
+            z-index: 9; 
+            flex-direction: column; 
+        }
+
+        .split-left { 
+            width: 100%; 
+            height: 40%; 
+            background: url('p2.jpg') center/cover no-repeat; 
+            flex: none; 
+        }
+
+        .split-right { 
+            width: 100%; 
+            height: 60%; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            color: #333; 
+            text-align: center; 
+        }
+
+        @media (min-width: 769px) { 
+            #page2 { flex-direction: row; } 
+            .split-left { width: 55%; height: 100%; flex: 1; } 
+            .split-right { width: 450px; height: 100%; } 
+        }
+
+        .pin-display { 
+            font-size: 2.2rem; 
+            letter-spacing: 12px; 
+            margin: 10px 0; 
+            color: #ff4d6d; 
+            font-weight: 600; 
+            height: 45px; 
+        }
+
+        .keypad { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 15px; 
+        }
+
+        .key { 
+            background: white; 
+            border-radius: 50%; 
+            width: 65px; 
+            height: 65px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 1.4rem; 
+            border: none; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+            cursor: pointer; 
+            color: #333; 
+            transition: transform 0.1s; 
+        }
+
+        .key:active { 
+            transform: scale(0.85); 
+            background: #eee; 
+        }
+
+        .key.special { 
+            font-size: 0.85rem; 
+            color: #ff4d6d; 
+            font-weight: 600; 
+        }
+
+        #page3 { 
+            background: #fffcfc; 
+            transform: translateY(100%); 
+            z-index: 8; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+        }
+
+        .menu-container { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+            width: 100%; 
+            max-width: 350px; 
+            padding: 20px; 
+        }
+
+        .menu-item { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 25px; 
+            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.2); 
+            display: flex; 
+            align-items: center; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            text-align: left; 
+        }
+
+        .menu-item:active { transform: scale(0.95); }
+        .menu-icon { font-size: 2.5rem; margin-right: 20px; }
+        .menu-text b { display: block; color: #b04b4b; }
+
+        .sub-page { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: #fff; 
+            z-index: 100; 
+            transform: translateX(100%); 
+            transition: 0.5s ease; 
+            overflow: hidden; 
+        }
+
+        .sub-page.active { transform: translateX(0); }
+
+        .back-btn-new { 
+            position: absolute; 
+            top: 25px; 
+            left: 20px; 
+            width: 45px; 
+            height: 45px; 
+            background: rgba(255, 255, 255, 0.4); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px); 
+            border-radius: 50%; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            color: #ff4d6d; 
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); 
+            border: 1px solid rgba(255, 255, 255, 0.5); 
+            cursor: pointer; 
+            z-index: 110; 
+            transition: 0.3s; 
+        }
+
+        .back-btn-new::before { 
+            content: ''; 
+            width: 10px; 
+            height: 10px; 
+            border-left: 3px solid #ff4d6d; 
+            border-bottom: 3px solid #ff4d6d; 
+            transform: rotate(45deg); 
+            margin-left: 4px; 
+        }
+
+        .back-btn-new:active { transform: scale(0.85); }
+
+        .memory-stack-wrapper { 
+            position: relative; 
+            width: 100%; 
+            height: 400px; 
+            margin-top: 40px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            perspective: 1000px; 
+            flex-shrink: 0; 
+        }
+
+        .polaroid-card { 
+            position: absolute; 
+            width: 280px; 
+            height: 350px; 
+            background: white; 
+            padding: 12px 12px 45px 12px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15); 
+            border-radius: 2px; 
+            cursor: grab; 
+            transition: transform 0.5s ease, opacity 0.5s; 
+            touch-action: none; 
+            z-index: 1; 
+        }
+
+        .polaroid-card img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            pointer-events: none; 
+            border: 1px solid #eee; 
+        }
+
+        .card-swiped-left { transform: translate(-150%, 20%) rotate(-30deg) !important; opacity: 0; }
+        .card-swiped-right { transform: translate(150%, 20%) rotate(30deg) !important; opacity: 0; }
+
+        #sub-calendar, #sub-note { 
+            background-size: cover; 
+            background-position: center; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            color: white; 
+            padding: 0; 
+        }
+
+        #sub-calendar { background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('c.jpg'); }
+        #sub-note { background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('n.jpg'); }
+
+        .glass-box { 
+            background: rgba(255, 255, 255, 0.1); 
+            padding: 30px; 
+            border-radius: 30px; 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            width: 92%; 
+            max-width: 450px; 
+            text-align: center; 
+        }
+
+        .mini-lab { 
+            font-size: 0.65rem; 
+            color: rgba(255,255,255,0.7); 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+
+        .mini-sep { 
+            font-size: 1.5rem; 
+            color: rgba(255,255,255,0.3); 
+            font-weight: 200; 
+        }
+
+        .active-p2#page1 { transform: translateY(-100%); opacity: 0; }
+        .active-p2#page2 { transform: translateY(0); }
+        .active-p3#page2 { transform: translateY(-100%); }
+        .active-p3#page3 { transform: translateY(0); }
+
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
+        .shake { animation: shake 0.4s; }
+    </style>
+</head>
+<body>
+
+    <div id="page1" class="scene">
+        <h2 style="font-family:'Playfair Display'; font-size: 2.2rem;">Happy Valentine's Day</h2>
+        <div class="heart-container" onmousedown="startFill()" onmouseup="stopFill()" ontouchstart="startFill()" ontouchend="stopFill()">
+            <svg viewBox="0 0 32 29.6" style="width:100%; height:100%;">
+                <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,11.5,15.9,16,21.2c4.5-5.3,16-11.9,16-21.2C32,3.8,28.2,0,23.6,0z" fill="rgba(255,255,255,0.2)"/>
+                <path id="fill-layer" d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,11.5,15.9,16,21.2c4.5-5.3,16-11.9,16-21.2C32,3.8,28.2,0,23.6,0z" />
+            </svg>
+        </div>
+        <p style="margin-top:20px; opacity:0.8; font-size:0.8rem; letter-spacing: 2px;">กดค้างเพื่อเติมแฟน</p>
+    </div>
+
+    <div id="page2" class="scene">
+        <div class="split-left"></div>
+        <div class="split-right">
+            <h2 style="color:#b04b4b; margin:0; text-align: center; width: 100%;">แต่เดี๋ยวก่อน!</h2>
+            <h3 style="color:#b04b4b; margin:0; text-align: center; width: 100%;">ใส่รหัสลับมาก่อนจำได้มั้ยน้าา</h3>
+            <div class="pin-display" id="pinDisplay">____</div>
+            <div class="keypad">
+                <button class="key" onclick="press('1')">1</button>
+                <button class="key" onclick="press('2')">2</button>
+                <button class="key" onclick="press('3')">3</button>
+                <button class="key" onclick="press('4')">4</button>
+                <button class="key" onclick="press('5')">5</button>
+                <button class="key" onclick="press('6')">6</button>
+                <button class="key" onclick="press('7')">7</button>
+                <button class="key" onclick="press('8')">8</button>
+                <button class="key" onclick="press('9')">9</button>
+                <button class="key special" onclick="delPin()">DEL</button>
+                <button class="key" onclick="press('0')">0</button>
+                <button class="key special" onclick="clearPin()">CLR</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="page3" class="scene">
+        <h2 style="font-family:'Playfair Display'; color:#b04b4b; margin-top:20px; text-align: center; width: 100%;">For You, Always</h2>
+        <div class="menu-container">
+            <div class="menu-item" onclick="openSub('memory')">
+                <div class="menu-icon">📸</div>
+                <div class="menu-text"><b>Memory</b><span>ความทรงจำของเรา</span></div>
+            </div>
+            <div class="menu-item" onclick="openSub('calendar')">
+                <div class="menu-icon">🗓️</div>
+                <div class="menu-text"><b>Our Time</b><span>เวลาที่เรารักกัน</span></div>
+            </div>
+            <div class="menu-item" onclick="openSub('note')">
+                <div class="menu-icon">✍️</div>
+                <div class="menu-text"><b>My Note</b><span>ถึงคุณแฟน</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sub-memory" class="sub-page" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #fffcfc;">
+        <div class="back-btn-new" onclick="closeSub('memory')"></div>
+        
+        <div style="margin-top: 85px; text-align: center; z-index: 10; flex-shrink: 0; padding-bottom: 20px;">
+            <h3 style="color:#b04b4b; margin: 0; font-size: 1.8rem; font-weight: 600;">อัลบั้มความทรงจำ</h3>
+            <p style="font-size:0.9rem; color:#888; margin-top: 5px;">ปัดรูปภาพเพื่อดูความทรงจำของเรา</p>
+        </div>
+        <div class="memory-stack-wrapper" id="polaroidStack">
+            <div class="polaroid-card"><img src="1.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="2.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="3.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="4.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="5.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="6.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="7.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="8.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="9.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="10.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="11.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="12.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="13.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="14.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="15.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="16.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="17.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="18.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="19.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="20.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="21.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="22.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="23.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="24.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="25.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="26.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="27.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="28.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="29.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="30.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="31.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="32.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="33.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="34.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="35.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="36.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="37.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="38.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="39.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="40.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="41.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="42.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            <div class="polaroid-card"><img src="43.jpg"><div style="margin-top:10px; font-size:0.8rem; color:#666;"></div></div>
+            </div>
+
+        <div style="margin-top: 30px; font-size: 0.7rem; color: #eee; letter-spacing: 2px;">OUR JOURNEY</div>
+    </div>
+
+    <div id="sub-calendar" class="sub-page">
+        <div class="back-btn-new" onclick="closeSub('calendar')" style="background:rgba(255,255,255,0.2); color:white; border-color:rgba(255,255,255,0.3);"></div>
+        <div class="glass-box">
+            <h3 style="font-family:'Playfair Display'; color:#fff; margin-bottom:35px; text-align: center;">เวลาที่เรารักกัน</h3>
+            <div style="display: flex; align-items: baseline; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                <div style="text-align:center;"><span style="font-size:1.8rem; font-weight:600; color:#ff4d6d;" id="live-years">0</span><br><span class="mini-lab">Yrs</span></div>
+                <div class="mini-sep">/</div>
+                <div style="text-align:center;"><span style="font-size:1.8rem; font-weight:600; color:#ff4d6d;" id="live-months">0</span><br><span class="mini-lab">Mos</span></div>
+                <div class="mini-sep">/</div>
+                <div style="text-align:center;"><span style="font-size:1.8rem; font-weight:600; color:#ff4d6d;" id="live-days">0</span><br><span class="mini-lab">Days</span></div>
+                <div style="width: 12px;"></div> 
+                <div style="text-align:center;"><span style="font-size:1.8rem; font-weight:600; color:#ff4d6d;" id="live-hours">00</span><br><span class="mini-lab">Hrs</span></div>
+                <div class="mini-sep">:</div>
+                <div style="text-align:center;"><span style="font-size:1.8rem; font-weight:600; color:#ff4d6d;" id="live-mins">00</span><br><span class="mini-lab">Min</span></div>
+                <div class="mini-sep">:</div>
+                <div style="text-align:center;"><span style="font-size:1.8rem; font-weight:600; color:#ff4d6d;" id="live-secs">00</span><br><span class="mini-lab">Sec</span></div>
+            </div>
+            <p style="margin-top: 40px; font-size: 0.75rem; color: rgba(255,255,255,0.5); letter-spacing: 4px; text-align: center;">SINCE 09 JAN 2025</p>
+        </div>
+    </div>
+
+    <div id="sub-note" class="sub-page">
+        <div class="back-btn-new" onclick="closeSub('note')" style="background:rgba(255,255,255,0.2); color:white; border-color:rgba(255,255,255,0.3);"></div>
+        <div class="glass-box">
+            <h3 style="font-family:'Playfair Display'; color: #ffb6c1; margin-bottom: 20px; text-align: center;">To My Special One</h3>
+            <div style="line-height: 2; font-size: 1rem; font-weight: 300; text-align: center;">
+                "ถึงมายด์คนน่ารักก" <br><br>เค้าอยากบอกกับเธอว่าดีใจมากๆที่มีเธอเข้ามาและคอยอยู่ข้างๆ ขอบคุณที่อดทนกับนิสัยแย่ๆของเค้าในบางครั้ง ขอบคุณที่คอยเตือนคอยบอกกันด้วยความเข้าใจเสมอ และไม่ทิ้งกันไปไหน ถึงเราจะมีช่วงที่เข้าใจกันบ้าง ไม่เข้าใจกันบ้าง แต่ทุกครั้งเราก็คุยกันด้วยเหตุผลและมันก็ทำให้เรารู้จักกันมากขึ้นนะ รักเธอมากๆน้าาา อย่าทิ้งกันไปไหนนะ อยากมีเทอไปทุกวันทุกเดือนทุกปีทุกเทศกาลเลย รักแฟนมากๆจุ๊บบบๆ❤️
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const START_DATE = new Date(2025, 0, 9, 23, 59, 0);
+
+        let fillLevel = 100; 
+        let interval;
+
+        function startFill() { 
+            clearInterval(interval); 
+            interval = setInterval(() => {
+                if (fillLevel > 0) { 
+                    fillLevel -= 1.2; 
+                    document.getElementById('fill-layer').style.clipPath = `inset(${fillLevel}% 0 0 0)`; 
+                } else { 
+                    clearInterval(interval); 
+                    document.getElementById('page1').classList.add('active-p2'); 
+                    document.getElementById('page2').classList.add('active-p2'); 
+                }
+            }, 20); 
+        }
+
+        function stopFill() { 
+            clearInterval(interval); 
+            interval = setInterval(() => {
+                if (fillLevel < 100) { 
+                    fillLevel += 3; 
+                    document.getElementById('fill-layer').style.clipPath = `inset(${fillLevel}% 0 0 0)`; 
+                } else { 
+                    clearInterval(interval); 
+                }
+            }, 20); 
+        }
+
+        let currentPin = "";
+
+        function press(num) {
+            if (currentPin.length < 4) {
+                currentPin += num; 
+                updatePinDisplay();
+                if (currentPin.length === 4) {
+                    if (currentPin === "0906") {
+                        setTimeout(() => { 
+                            document.getElementById('page2').classList.add('active-p3'); 
+                            document.getElementById('page3').classList.add('active-p3'); 
+                        }, 200);
+                    } else {
+                        setTimeout(() => { 
+                            document.getElementById('pinDisplay').classList.add('shake'); 
+                            setTimeout(() => { 
+                                document.getElementById('pinDisplay').classList.remove('shake'); 
+                                clearPin(); 
+                            }, 400); 
+                        }, 200);
+                    }
+                }
+            }
+        }
+
+        function delPin() { currentPin = currentPin.slice(0, -1); updatePinDisplay(); }
+        function clearPin() { currentPin = ""; updatePinDisplay(); }
+        function updatePinDisplay() { document.getElementById('pinDisplay').innerText = currentPin.padEnd(4, "_"); }
+
+        function openSub(id) { 
+            document.getElementById('sub-' + id).classList.add('active'); 
+            if(id === 'memory') setTimeout(initStack, 100);
+        }
+
+        function closeSub(id) { document.getElementById('sub-' + id).classList.remove('active'); }
+
+        let startX = 0; 
+        let isDragging = false; 
+        let activeCard = null;
+
+        function initStack() {
+            const cards = Array.from(document.querySelectorAll('.polaroid-card'));
+            cards.forEach((c, i) => {
+                c.style.zIndex = i + 1; 
+                c.style.transform = `rotate(${(Math.random()*6-3).toFixed(2)}deg) translateY(${(cards.length - 1 - i)*-2}px)`;
+                c.onmousedown = cardDragStart;
+                c.ontouchstart = cardDragStart;
+            });
+        }
+
+        function cardDragStart(e) {
+            isDragging = true;
+            const cards = document.querySelectorAll('.polaroid-card');
+            activeCard = cards[cards.length - 1]; 
+            startX = (e.type === 'touchstart') ? e.touches[0].clientX : e.clientX;
+        }
+
+        window.addEventListener('touchmove', (e) => { if(isDragging) e.preventDefault(); }, { passive: false });
+        window.onmouseup = handleRelease;
+        window.ontouchend = handleRelease;
+
+        function handleRelease(e) {
+            if (!isDragging || !activeCard) return;
+            let endX = (e.type === 'touchend') ? e.changedTouches[0].clientX : e.clientX;
+            let diff = endX - startX;
+
+            if (Math.abs(diff) > 70) {
+                const card = activeCard;
+                card.classList.add(diff > 0 ? 'card-swiped-right' : 'card-swiped-left');
+                setTimeout(() => {
+                    card.classList.remove('card-swiped-left', 'card-swiped-right');
+                    document.getElementById('polaroidStack').prepend(card);
+                    initStack(); 
+                }, 500);
+            }
+            isDragging = false; 
+            activeCard = null;
+        }
+
+        function updateCounter() {
+            const now = new Date(); 
+            let diff = now.getTime() - START_DATE.getTime();
+            if (diff < 0) return;
+            
+            let years = now.getFullYear() - START_DATE.getFullYear();
+            let months = now.getMonth() - START_DATE.getMonth();
+            let days = now.getDate() - START_DATE.getDate();
+            
+            if (days < 0) { months--; days += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
+            if (months < 0) { years--; months += 12; }
+            
+            document.getElementById('live-years').innerText = years;
+            document.getElementById('live-months').innerText = months;
+            document.getElementById('live-days').innerText = days;
+            document.getElementById('live-hours').innerText = now.getHours().toString().padStart(2, '0');
+            document.getElementById('live-mins').innerText = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('live-secs').innerText = now.getSeconds().toString().padStart(2, '0');
+        }
+        setInterval(updateCounter, 1000);
+    </script>
+</body>
+</html>
