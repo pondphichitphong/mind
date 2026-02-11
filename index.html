@@ -315,21 +315,19 @@
     <div id="page2" class="scene">
         <div class="split-left"></div>
         <div class="split-right">
-            <h2 style="color:#b04b4b; margin:0; text-align: center; width: 100%;">แต่เดี๋ยวก่อน!</h2>
-            <h3 style="color:#b04b4b; margin:0; text-align: center; width: 100%;">ใส่รหัสลับมาก่อนจำได้มั้ยน้าา</h3>
+            <div style="margin-bottom: 10px;">
+                <h2 style="color:#b04b4b; margin:0; font-size: 1.2rem;">แต่เดี๋ยวก่อน!</h2>
+                <p style="color:#b04b4b; margin:0; font-size: 0.9rem;">ใส่รหัสลับมาก่อนจำได้มั้ยน้าา</p>
+            </div>
+
             <div class="pin-display" id="pinDisplay" style="margin-bottom: 10px;">____</div>
+            
             <div class="keypad">
-                <button class="key" onclick="press('1')">1</button>
-                <button class="key" onclick="press('2')">2</button>
-                <button class="key" onclick="press('3')">3</button>
-                <button class="key" onclick="press('4')">4</button>
-                <button class="key" onclick="press('5')">5</button>
-                <button class="key" onclick="press('6')">6</button>
-                <button class="key" onclick="press('7')">7</button>
-                <button class="key" onclick="press('8')">8</button>
-                <button class="key" onclick="press('9')">9</button>
+                <script>
+                    for(let i=1; i<=9; i++) document.write(`<button class="key" onclick="press('${i}')">${i}</button>`);
+                </script>
                 <button class="key special" onclick="delPin()">DEL</button>
-                <button class="key" onclick="press('0')">0</button>
+                <button class="key" onclick="press('0')">${0}</button>
                 <button class="key special" onclick="clearPin()">CLR</button>
             </div>
         </div>
@@ -574,4 +572,3 @@
     </script>
 </body>
 </html>
-
