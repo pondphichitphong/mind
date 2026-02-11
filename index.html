@@ -94,29 +94,31 @@
 
         .pin-display { 
             font-size: 2.2rem; 
-            letter-spacing: 12px; 
-            margin: 15px 0; 
+            letter-spacing: 15px;
+            margin: 20px 0; 
             color: #ff4d6d; 
             font-weight: 600; 
-            height: 45px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
+            height: 50px; 
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;     
+            text-indent: 15px;     
         }
 
         .keypad { 
             display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 12px; 
-            justify-items: center;
-            align-items: center;
+            grid-template-columns: repeat(3, 80px);
+            gap: 15px; 
+            justify-content: center; 
+            align-content: center;
         }
 
         .key { 
             background: white; 
             border-radius: 50%; 
-            width: 60px; 
-            height: 60px; 
+            width: 65px; 
+            height: 65px; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -124,6 +126,7 @@
             border: none; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
             cursor: pointer; 
+            justify-self: center; 
         }
 
         .key:active { 
@@ -317,12 +320,14 @@
     </div>
 
     <div id="page2" class="scene">
-        <div class="split-left"></div> <div class="split-right">      <div style="text-align: center;">
-                <h2 style="color:#b04b4b; margin:0; font-size: 1.4rem; font-weight: 600;">แต่เดี๋ยวก่อน!</h2>
-                <p style="color:#b04b4b; margin:5px 0 0 0; font-size: 1rem; opacity: 0.8;">ใส่รหัสลับมาก่อนจำได้มั้ยน้าา</p>
-            </div>
+        <div class="split-left"></div>
+        <div class="split-right">
+        <div style="text-align: center;">
+            <h2 style="color:#b04b4b; margin:0; font-size: 1.4rem;">แต่เดี๋ยวก่อน!</h2>
+            <h3 style="color:#b04b4b; margin:5px 0 0 0; font-size: 1rem;">ใส่รหัสลับมาก่อนจำได้มั้ยน้าา</h3>
+        </div>
 
-            <div class="pin-display" id="pinDisplay">____</div>
+        <div class="pin-display" id="pinDisplay">____</div>
             
             <div class="keypad">
                 <button class="key" onclick="press('1')">1</button>
